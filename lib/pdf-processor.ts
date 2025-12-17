@@ -2,25 +2,23 @@ import { PDFDocument, PDFPage } from "pdf-lib";
 
 export type LayoutType = "2-up" | "4-up";
 export type SpacingType = "snug" | "regular" | "spacious";
+export type OrientationType = "landscape" | "portrait";
 
 // Letter size in points (8.5 x 11 inches)
 const LETTER_WIDTH = 612;
 const LETTER_HEIGHT = 792;
 
-// Landscape dimensions
-const OUTPUT_WIDTH = LETTER_HEIGHT; // 792 points (11 inches)
-const OUTPUT_HEIGHT = LETTER_WIDTH; // 612 points (8.5 inches)
-
 // Spacing presets as margin percentages
 const SPACING_MARGINS: Record<SpacingType, number> = {
   snug: 0.02, // 2% margin
   regular: 0.05, // 5% margin
-  spacious: 0.10, // 10% margin
+  spacious: 0.1, // 10% margin
 };
 
 interface ProcessOptions {
   layout: LayoutType;
   spacing: SpacingType;
+  orientation: OrientationType;
 }
 
 interface PagePlacement {
@@ -31,42 +29,97 @@ interface PagePlacement {
 }
 
 /**
- * Calculate the placements for pages based on layout and spacing
+ * Get output dimensions based on orientation
+ */
+function getOutputDimensions(orientation: OrientationType): {
+  width: number;
+  height: number;
+} {
+  if (orientation === "landscape") {
+    return { width: LETTER_HEIGHT, height: LETTER_WIDTH }; // 792 x 612
+  } else {
+    return { width: LETTER_WIDTH, height: LETTER_HEIGHT }; // 612 x 792
+  }
+}
+
+/**
+ * Calculate the placements for pages based on layout, spacing, and orientation
  */
 function calculatePlacements(
   layout: LayoutType,
-  spacing: SpacingType
+  spacing: SpacingType,
+  orientation: OrientationType,
 ): PagePlacement[] {
+  const { width: outputWidth, height: outputHeight } =
+    getOutputDimensions(orientation);
   const margin = SPACING_MARGINS[spacing];
-  const marginX = OUTPUT_WIDTH * margin;
-  const marginY = OUTPUT_HEIGHT * margin;
+  const marginX = outputWidth * margin;
+  const marginY = outputHeight * margin;
   const gap = Math.min(marginX, marginY);
 
   if (layout === "2-up") {
-    // 2 pages side by side
-    const availableWidth = OUTPUT_WIDTH - marginX * 2 - gap;
-    const availableHeight = OUTPUT_HEIGHT - marginY * 2;
-    const cellWidth = availableWidth / 2;
-    const cellHeight = availableHeight;
+    if (orientation === "landscape") {
+      // 2 pages side by side (horizontal arrangement)
+      const availableWidth = outputWidth - marginX * 2 - gap;
+      const availableHeight = outputHeight - marginY * 2;
+      const cellWidth = availableWidth / 2;
+      const cellHeight = availableHeight;
 
-    return [
-      { x: marginX, y: marginY, width: cellWidth, height: cellHeight },
-      { x: marginX + cellWidth + gap, y: marginY, width: cellWidth, height: cellHeight },
-    ];
+      return [
+        { x: marginX, y: marginY, width: cellWidth, height: cellHeight },
+        {
+          x: marginX + cellWidth + gap,
+          y: marginY,
+          width: cellWidth,
+          height: cellHeight,
+        },
+      ];
+    } else {
+      // 2 pages stacked vertically (portrait)
+      const availableWidth = outputWidth - marginX * 2;
+      const availableHeight = outputHeight - marginY * 2 - gap;
+      const cellWidth = availableWidth;
+      const cellHeight = availableHeight / 2;
+
+      return [
+        {
+          x: marginX,
+          y: marginY + cellHeight + gap,
+          width: cellWidth,
+          height: cellHeight,
+        },
+        { x: marginX, y: marginY, width: cellWidth, height: cellHeight },
+      ];
+    }
   } else {
     // 4-up: 2x2 grid
-    const availableWidth = OUTPUT_WIDTH - marginX * 2 - gap;
-    const availableHeight = OUTPUT_HEIGHT - marginY * 2 - gap;
+    const availableWidth = outputWidth - marginX * 2 - gap;
+    const availableHeight = outputHeight - marginY * 2 - gap;
     const cellWidth = availableWidth / 2;
     const cellHeight = availableHeight / 2;
 
     return [
       // Top row (left to right)
-      { x: marginX, y: marginY + cellHeight + gap, width: cellWidth, height: cellHeight },
-      { x: marginX + cellWidth + gap, y: marginY + cellHeight + gap, width: cellWidth, height: cellHeight },
+      {
+        x: marginX,
+        y: marginY + cellHeight + gap,
+        width: cellWidth,
+        height: cellHeight,
+      },
+      {
+        x: marginX + cellWidth + gap,
+        y: marginY + cellHeight + gap,
+        width: cellWidth,
+        height: cellHeight,
+      },
       // Bottom row (left to right)
       { x: marginX, y: marginY, width: cellWidth, height: cellHeight },
-      { x: marginX + cellWidth + gap, y: marginY, width: cellWidth, height: cellHeight },
+      {
+        x: marginX + cellWidth + gap,
+        y: marginY,
+        width: cellWidth,
+        height: cellHeight,
+      },
     ];
   }
 }
@@ -78,7 +131,7 @@ function calculateScale(
   pageWidth: number,
   pageHeight: number,
   targetWidth: number,
-  targetHeight: number
+  targetHeight: number,
 ): { scale: number; offsetX: number; offsetY: number } {
   const scaleX = targetWidth / pageWidth;
   const scaleY = targetHeight / pageHeight;
@@ -98,9 +151,9 @@ function calculateScale(
  */
 export async function combinePages(
   pdfBytes: Uint8Array,
-  options: ProcessOptions
+  options: ProcessOptions,
 ): Promise<Uint8Array> {
-  const { layout, spacing } = options;
+  const { layout, spacing, orientation } = options;
   const pagesPerSheet = layout === "2-up" ? 2 : 4;
 
   // Load the source PDF
@@ -113,13 +166,21 @@ export async function combinePages(
   // Create a new PDF for output
   const outputPdf = await PDFDocument.create();
 
+  // Get output dimensions based on orientation
+  const { width: outputWidth, height: outputHeight } =
+    getOutputDimensions(orientation);
+
   // Calculate how many output pages we need
   const outputPageCount = Math.ceil(totalPages / pagesPerSheet);
-  const placements = calculatePlacements(layout, spacing);
+  const placements = calculatePlacements(layout, spacing, orientation);
 
-  for (let outputPageIndex = 0; outputPageIndex < outputPageCount; outputPageIndex++) {
-    // Create a new landscape page
-    const outputPage = outputPdf.addPage([OUTPUT_WIDTH, OUTPUT_HEIGHT]);
+  for (
+    let outputPageIndex = 0;
+    outputPageIndex < outputPageCount;
+    outputPageIndex++
+  ) {
+    // Create a new page with the correct orientation
+    const outputPage = outputPdf.addPage([outputWidth, outputHeight]);
 
     // Embed source pages onto this output page
     for (let slotIndex = 0; slotIndex < pagesPerSheet; slotIndex++) {
@@ -141,7 +202,7 @@ export async function combinePages(
         srcWidth,
         srcHeight,
         placement.width,
-        placement.height
+        placement.height,
       );
 
       // Embed the page
@@ -164,7 +225,10 @@ export async function combinePages(
 /**
  * Get the number of output pages for a given source page count and layout
  */
-export function getOutputPageCount(sourcePages: number, layout: LayoutType): number {
+export function getOutputPageCount(
+  sourcePages: number,
+  layout: LayoutType,
+): number {
   const pagesPerSheet = layout === "2-up" ? 2 : 4;
   return Math.ceil(sourcePages / pagesPerSheet);
 }

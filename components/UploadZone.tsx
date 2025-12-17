@@ -83,11 +83,11 @@ export default function UploadZone({ onFileSelect, onError }: UploadZoneProps) {
       onDrop={handleDrop}
       className={`
         w-full max-w-lg p-8 border-2 border-dashed rounded-lg text-center
-        cursor-pointer transition-all duration-200
+        cursor-pointer transition-all duration-200 backdrop-blur-sm
         ${
           isDragging
-            ? "border-blue-500 bg-blue-50"
-            : "border-gray-300 bg-white hover:border-gray-400 hover:bg-gray-50"
+            ? "border-amber-400 bg-teal-600/70"
+            : "border-teal-400 bg-teal-800/50 hover:border-amber-400 hover:bg-teal-700/60"
         }
       `}
     >
@@ -102,7 +102,7 @@ export default function UploadZone({ onFileSelect, onError }: UploadZoneProps) {
       {/* Upload Icon */}
       <div className="mb-4">
         <svg
-          className={`mx-auto h-12 w-12 ${isDragging ? "text-blue-500" : "text-gray-400"}`}
+          className={`mx-auto h-12 w-12 ${isDragging ? "text-amber-400" : "text-teal-300"}`}
           stroke="currentColor"
           fill="none"
           viewBox="0 0 48 48"
@@ -119,12 +119,12 @@ export default function UploadZone({ onFileSelect, onError }: UploadZoneProps) {
 
       {/* Instructions */}
       <p
-        className={`text-lg font-medium ${isDragging ? "text-blue-600" : "text-gray-700"}`}
+        className={`text-lg font-medium ${isDragging ? "text-amber-300" : "text-white"}`}
       >
         {isDragging ? "Drop your PDF here" : "Drag & drop your PDF here"}
       </p>
-      <p className="mt-1 text-sm text-gray-500">or click to browse</p>
-      <p className="mt-3 text-xs text-gray-400">PDF files only, max 20MB</p>
+      <p className="mt-1 text-sm text-teal-200">or click to browse</p>
+      <p className="mt-3 text-xs text-teal-300">PDF files only, max 20MB</p>
     </div>
   );
 }

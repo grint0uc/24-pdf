@@ -6,12 +6,14 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import LayoutSelector from "@/components/LayoutSelector";
 import SpacingSelector from "@/components/SpacingSelector";
+import OrientationSelector from "@/components/OrientationSelector";
 import PdfPreview from "@/components/PdfPreview";
 import ProcessButton from "@/components/ProcessButton";
 import TipButton from "@/components/TipButton";
 import {
   LayoutType,
   SpacingType,
+  OrientationType,
   getOutputPageCount,
 } from "@/lib/pdf-processor";
 
@@ -27,6 +29,7 @@ export default function EditorPage() {
   const [loading, setLoading] = useState(true);
   const [layout, setLayout] = useState<LayoutType>("2-up");
   const [spacing, setSpacing] = useState<SpacingType>("regular");
+  const [orientation, setOrientation] = useState<OrientationType>("landscape");
   const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
@@ -69,7 +72,7 @@ export default function EditorPage() {
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 flex items-center justify-center">
-          <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+          <div className="animate-spin h-8 w-8 border-4 border-amber-400 border-t-transparent rounded-full"></div>
         </main>
       </div>
     );
@@ -81,10 +84,10 @@ export default function EditorPage() {
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 flex items-center justify-center p-8">
-          <div className="text-center max-w-md">
+          <div className="text-center max-w-md bg-teal-800/60 backdrop-blur-sm p-8 rounded-xl border border-teal-600">
             <div className="mb-6">
               <svg
-                className="mx-auto h-16 w-16 text-green-500"
+                className="mx-auto h-16 w-16 text-teal-300"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -97,28 +100,28 @@ export default function EditorPage() {
                 />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="text-2xl font-bold text-white mb-2">
               Download Complete!
             </h2>
-            <p className="text-gray-600 mb-8">
+            <p className="text-teal-200 mb-8">
               Your combined PDF has been downloaded successfully.
             </p>
             <div className="space-y-3">
               <button
                 onClick={handleStartOver}
-                className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="w-full py-3 px-4 bg-orange-400 text-white rounded-lg hover:bg-orange-500 transition-colors font-medium"
               >
                 Start Over
               </button>
               <button
                 onClick={() => setShowSuccess(false)}
-                className="w-full py-3 px-4 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                className="w-full py-3 px-4 bg-teal-600 text-teal-100 rounded-lg hover:bg-teal-500 transition-colors font-medium"
               >
                 Back to Editor
               </button>
             </div>
-            <div className="mt-8 pt-6 border-t border-gray-200">
-              <p className="text-sm text-gray-500 mb-3">
+            <div className="mt-8 pt-6 border-t border-teal-600">
+              <p className="text-sm text-teal-300 mb-3">
                 Enjoying PDF Combiner?
               </p>
               <TipButton />
@@ -134,14 +137,14 @@ export default function EditorPage() {
       <Header />
       <main className="flex-1 flex flex-col md:flex-row">
         {/* Sidebar */}
-        <aside className="w-full md:w-72 border-b md:border-b-0 md:border-r border-gray-200 bg-gray-50 p-4 flex flex-col">
+        <aside className="w-full md:w-72 border-b md:border-b-0 md:border-r border-teal-600 bg-teal-800/80 backdrop-blur-sm p-4 flex flex-col">
           {/* File info */}
           {pdfInfo && (
-            <div className="mb-4 p-3 bg-white rounded-lg border border-gray-200">
-              <p className="text-sm font-medium text-gray-900 truncate">
+            <div className="mb-4 p-3 bg-teal-700/50 rounded-lg border border-teal-600">
+              <p className="text-sm font-medium text-white truncate">
                 {pdfInfo.fileName}
               </p>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-teal-300 mt-1">
                 {pdfInfo.pageCount} page{pdfInfo.pageCount !== 1 ? "s" : ""} →{" "}
                 {outputPageCount} output page{outputPageCount !== 1 ? "s" : ""}
               </p>
@@ -151,6 +154,10 @@ export default function EditorPage() {
           {/* Options */}
           <div className="space-y-6">
             <LayoutSelector value={layout} onChange={setLayout} />
+            <OrientationSelector
+              value={orientation}
+              onChange={setOrientation}
+            />
             <SpacingSelector value={spacing} onChange={setSpacing} />
 
             {pdfInfo && (
@@ -159,6 +166,7 @@ export default function EditorPage() {
                 fileName={pdfInfo.fileName}
                 layout={layout}
                 spacing={spacing}
+                orientation={orientation}
                 onSuccess={handleSuccess}
               />
             )}
@@ -168,7 +176,7 @@ export default function EditorPage() {
           <div className="mt-auto pt-6">
             <Link
               href="/"
-              className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 transition-colors"
+              className="inline-flex items-center text-sm text-teal-300 hover:text-white transition-colors"
             >
               <svg
                 className="w-4 h-4 mr-1"
@@ -189,12 +197,13 @@ export default function EditorPage() {
         </aside>
 
         {/* Preview area */}
-        <div className="flex-1 overflow-auto bg-gray-100 min-h-[400px]">
+        <div className="flex-1 overflow-auto bg-teal-900/50 min-h-[400px]">
           {pdfInfo && (
             <PdfPreview
               pdfData={pdfInfo.data}
               layout={layout}
               spacing={spacing}
+              orientation={orientation}
             />
           )}
         </div>

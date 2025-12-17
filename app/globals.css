@@ -3,18 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 255, 255, 255;
-  --background-end-rgb: 245, 245, 245;
+    --teal-400: #309898;
+    --teal-500: #2a8585;
+    --teal-600: #247272;
+    --teal-700: #1e5f5f;
+    --teal-800: #184c4c;
+    --teal-900: #123939;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-  min-height: 100vh;
+    background: linear-gradient(135deg, #123939 0%, #1e5f5f 50%, #184c4c 100%);
+    min-height: 100vh;
 }

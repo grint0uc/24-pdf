@@ -2,18 +2,29 @@
 
 import { useEffect, useState, useRef } from "react";
 import * as pdfjsLib from "pdfjs-dist";
-import { combinePages, LayoutType, SpacingType } from "@/lib/pdf-processor";
+import {
+  combinePages,
+  LayoutType,
+  SpacingType,
+  OrientationType,
+} from "@/lib/pdf-processor";
 
-// Set worker path
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+// Set worker path to local file instead of CDN for reliability
+pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
 interface PdfPreviewProps {
   pdfData: string; // base64 encoded PDF
   layout: LayoutType;
   spacing: SpacingType;
+  orientation: OrientationType;
 }
 
-export default function PdfPreview({ pdfData, layout, spacing }: PdfPreviewProps) {
+export default function PdfPreview({
+  pdfData,
+  layout,
+  spacing,
+  orientation,
+}: PdfPreviewProps) {
   const [previews, setPreviews] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +38,7 @@ export default function PdfPreview({ pdfData, layout, spacing }: PdfPreviewProps
     return () => {
       abortRef.current = true;
     };
-  }, [pdfData, layout, spacing]);
+  }, [pdfData, layout, spacing, orientation]);
 
   const generatePreview = async () => {
     setLoading(true);
@@ -42,12 +53,18 @@ export default function PdfPreview({ pdfData, layout, spacing }: PdfPreviewProps
       }
 
       // Process the PDF with current options
-      const processedBytes = await combinePages(bytes, { layout, spacing });
+      const processedBytes = await combinePages(bytes, {
+        layout,
+        spacing,
+        orientation,
+      });
 
       if (abortRef.current) return;
 
       // Load the processed PDF with pdf.js for rendering
-      const pdf = await pdfjsLib.getDocument({ data: processedBytes }).promise;
+      const loadingTask = pdfjsLib.getDocument({ data: processedBytes });
+
+      const pdf = await loadingTask.promise;
       const numPages = pdf.numPages;
       setTotalPages(numPages);
 
@@ -74,16 +91,36 @@ export default function PdfPreview({ pdfData, layout, spacing }: PdfPreviewProps
         }).promise;
 
         pageImages.push(canvas.toDataURL("image/png"));
+
+        // Clean up page resources
+        page.cleanup();
       }
 
       if (!abortRef.current) {
         setPreviews(pageImages);
         setLoading(false);
       }
+
+      // Clean up PDF document
+      pdf.destroy();
     } catch (err) {
       console.error("Preview generation error:", err);
       if (!abortRef.current) {
-        setError("Failed to generate preview");
+        const errorMessage =
+          err instanceof Error ? err.message : "Unknown error";
+        if (
+          errorMessage.includes("worker") ||
+          errorMessage.includes("Worker")
+        ) {
+          setError("Failed to load PDF renderer. Please refresh the page.");
+        } else if (
+          errorMessage.includes("Invalid PDF") ||
+          errorMessage.includes("password")
+        ) {
+          setError("Invalid or password-protected PDF");
+        } else {
+          setError("Failed to generate preview. Please try again.");
+        }
         setLoading(false);
       }
     }
@@ -92,10 +129,10 @@ export default function PdfPreview({ pdfData, layout, spacing }: PdfPreviewProps
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center p-8">
-        <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full mb-4"></div>
-        <p className="text-gray-600">Generating preview...</p>
-        <p className="text-xs text-gray-400 mt-1">
-          {layout} layout with {spacing} spacing
+        <div className="animate-spin h-10 w-10 border-4 border-amber-400 border-t-transparent rounded-full mb-4"></div>
+        <p className="text-teal-100">Generating preview...</p>
+        <p className="text-xs text-teal-300 mt-1">
+          {layout} • {orientation} • {spacing}
         </p>
       </div>
     );
@@ -103,7 +140,7 @@ export default function PdfPreview({ pdfData, layout, spacing }: PdfPreviewProps
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center p-8 text-red-600">
+      <div className="flex flex-col items-center justify-center p-8 text-red-300">
         <svg
           className="h-12 w-12 mb-2"
           fill="none"
@@ -118,23 +155,30 @@ export default function PdfPreview({ pdfData, layout, spacing }: PdfPreviewProps
           />
         </svg>
         <p>{error}</p>
+        <button
+          onClick={() => generatePreview()}
+          className="mt-4 px-4 py-2 bg-orange-400 text-white rounded hover:bg-orange-500 transition-colors"
+        >
+          Retry
+        </button>
       </div>
     );
   }
 
   return (
     <div className="flex flex-col items-center p-4">
-      <div className="mb-4 text-sm text-gray-600">
-        {totalPages} output page{totalPages !== 1 ? "s" : ""} • {layout} • {spacing}
+      <div className="mb-4 text-sm text-teal-200">
+        {totalPages} output page{totalPages !== 1 ? "s" : ""} • {layout} •{" "}
+        {orientation} • {spacing}
       </div>
 
       <div className="flex flex-wrap gap-4 justify-center">
         {previews.map((src, index) => (
           <div
             key={index}
-            className="bg-white shadow-lg rounded-lg overflow-hidden"
+            className="bg-teal-800/60 shadow-lg rounded-lg overflow-hidden border border-teal-600"
           >
-            <div className="p-2 bg-gray-100 text-xs text-gray-500 text-center border-b">
+            <div className="p-2 bg-teal-700/50 text-xs text-teal-200 text-center border-b border-teal-600">
               Page {index + 1}
             </div>
             <img
@@ -147,7 +191,7 @@ export default function PdfPreview({ pdfData, layout, spacing }: PdfPreviewProps
       </div>
 
       {totalPages > 3 && (
-        <p className="mt-4 text-sm text-gray-500">
+        <p className="mt-4 text-sm text-teal-300">
           +{totalPages - 3} more page{totalPages - 3 !== 1 ? "s" : ""}
         </p>
       )}

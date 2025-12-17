@@ -26,4 +26,7 @@ node_modules/
 
 # Task files
 # tasks.json
-# tasks/ 
+# tasks/
+
+# Generated PDF worker (copied from node_modules during build)
+public/pdf.worker.min.mjs

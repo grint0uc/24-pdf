@@ -1,13 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { combinePages, LayoutType, SpacingType } from "@/lib/pdf-processor";
+import {
+  combinePages,
+  LayoutType,
+  SpacingType,
+  OrientationType,
+} from "@/lib/pdf-processor";
 
 interface ProcessButtonProps {
   pdfData: string; // base64 encoded PDF
   fileName: string;
   layout: LayoutType;
   spacing: SpacingType;
+  orientation: OrientationType;
   onSuccess: () => void;
 }
 
@@ -16,6 +22,7 @@ export default function ProcessButton({
   fileName,
   layout,
   spacing,
+  orientation,
   onSuccess,
 }: ProcessButtonProps) {
   const [processing, setProcessing] = useState(false);
@@ -34,7 +41,11 @@ export default function ProcessButton({
       }
 
       // Process the PDF
-      const processedBytes = await combinePages(bytes, { layout, spacing });
+      const processedBytes = await combinePages(bytes, {
+        layout,
+        spacing,
+        orientation,
+      });
 
       // Create download
       const blob = new Blob([processedBytes as unknown as BlobPart], {
@@ -44,7 +55,7 @@ export default function ProcessButton({
 
       // Generate output filename
       const baseName = fileName.replace(/\.pdf$/i, "");
-      const outputFileName = `${baseName}-${layout}.pdf`;
+      const outputFileName = `${baseName}-${layout}-${orientation}.pdf`;
 
       // Trigger download
       const link = document.createElement("a");
@@ -76,7 +87,7 @@ export default function ProcessButton({
           ${
             processing
               ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-600 hover:bg-blue-700 text-white"
+              : "bg-orange-400 hover:bg-orange-500 text-white"
           }
         `}
       >
