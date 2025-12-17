@@ -81,7 +81,7 @@ function SpacingIcon({
   type: SpacingType;
   selected: boolean;
 }) {
-  const color = selected ? "#FF9F00" : "#66c3c3";
+  const color = selected ? "#FF9F00" : "#75cfdb";
 
   // Different margin sizes based on spacing type
   const margins: Record<SpacingType, number> = {

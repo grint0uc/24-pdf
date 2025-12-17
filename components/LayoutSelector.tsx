@@ -77,7 +77,7 @@ export default function LayoutSelector({
 }
 
 function TwoUpIcon({ selected }: { selected: boolean }) {
-  const color = selected ? "#FF9F00" : "#66c3c3";
+  const color = selected ? "#FF9F00" : "#75cfdb";
   return (
     <svg width="48" height="36" viewBox="0 0 48 36" fill="none">
       <rect
@@ -115,7 +115,7 @@ function TwoUpIcon({ selected }: { selected: boolean }) {
 }
 
 function FourUpIcon({ selected }: { selected: boolean }) {
-  const color = selected ? "#FF9F00" : "#66c3c3";
+  const color = selected ? "#FF9F00" : "#75cfdb";
   return (
     <svg width="48" height="36" viewBox="0 0 48 36" fill="none">
       <rect

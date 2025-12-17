@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 :root {
-    --teal-400: #309898;
-    --teal-500: #2a8585;
-    --teal-600: #247272;
-    --teal-700: #1e5f5f;
-    --teal-800: #184c4c;
-    --teal-900: #123939;
+    --teal-400: #2da8b8;
+    --teal-500: #2896a5;
+    --teal-600: #238492;
+    --teal-700: #1e727f;
+    --teal-800: #195a65;
+    --teal-900: #14474f;
 }
 
 body {
-    background: linear-gradient(135deg, #123939 0%, #1e5f5f 50%, #184c4c 100%);
+    background: #14474f;
     min-height: 100vh;
 }
