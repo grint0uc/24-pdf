@@ -121,9 +121,7 @@ export default function EditorPage() {
               </button>
             </div>
             <div className="mt-8 pt-6 border-t border-teal-600">
-              <p className="text-sm text-teal-300 mb-3">
-                Enjoying PDF Combiner?
-              </p>
+              <p className="text-sm text-teal-300 mb-3">Enjoying 2up4up?</p>
               <TipButton />
             </div>
           </div>

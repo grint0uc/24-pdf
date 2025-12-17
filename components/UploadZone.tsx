@@ -14,7 +14,6 @@ export default function UploadZone({ onFileSelect, onError }: UploadZoneProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const validateFile = (file: File): string | null => {
-    // Check file type
     if (
       file.type !== "application/pdf" &&
       !file.name.toLowerCase().endsWith(".pdf")
@@ -22,7 +21,6 @@ export default function UploadZone({ onFileSelect, onError }: UploadZoneProps) {
       return "Please upload a PDF file";
     }
 
-    // Check file size
     if (file.size > MAX_FILE_SIZE) {
       return "File size exceeds 20MB limit";
     }
@@ -71,7 +69,6 @@ export default function UploadZone({ onFileSelect, onError }: UploadZoneProps) {
     if (files && files.length > 0) {
       handleFile(files[0]);
     }
-    // Reset input so same file can be selected again
     e.target.value = "";
   };
 
@@ -82,15 +79,30 @@ export default function UploadZone({ onFileSelect, onError }: UploadZoneProps) {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       className={`
-        w-full max-w-lg p-8 border-2 border-dashed rounded-lg text-center
-        cursor-pointer transition-all duration-200 backdrop-blur-sm
+        relative w-full max-w-lg p-10 rounded-2xl text-center
+        cursor-pointer transition-all duration-300 backdrop-blur-sm
+        group overflow-hidden
         ${
           isDragging
-            ? "border-amber-400 bg-teal-600/70"
-            : "border-teal-400 bg-teal-800/50 hover:border-amber-400 hover:bg-teal-700/60"
+            ? "bg-amber-400/20 border-2 border-amber-400 scale-105"
+            : "bg-teal-800/40 border-2 border-dashed border-teal-400/50 hover:border-amber-400 hover:bg-teal-700/50"
         }
       `}
     >
+      {/* Animated corner accents */}
+      <div
+        className={`absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 rounded-tl-xl transition-colors ${isDragging ? "border-amber-400" : "border-teal-400/50 group-hover:border-amber-400"}`}
+      />
+      <div
+        className={`absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 rounded-tr-xl transition-colors ${isDragging ? "border-amber-400" : "border-teal-400/50 group-hover:border-amber-400"}`}
+      />
+      <div
+        className={`absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 rounded-bl-xl transition-colors ${isDragging ? "border-amber-400" : "border-teal-400/50 group-hover:border-amber-400"}`}
+      />
+      <div
+        className={`absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 rounded-br-xl transition-colors ${isDragging ? "border-amber-400" : "border-teal-400/50 group-hover:border-amber-400"}`}
+      />
+
       <input
         ref={fileInputRef}
         type="file"
@@ -99,32 +111,64 @@ export default function UploadZone({ onFileSelect, onError }: UploadZoneProps) {
         className="hidden"
       />
 
-      {/* Upload Icon */}
-      <div className="mb-4">
-        <svg
-          className={`mx-auto h-12 w-12 ${isDragging ? "text-amber-400" : "text-teal-300"}`}
-          stroke="currentColor"
-          fill="none"
-          viewBox="0 0 48 48"
-          aria-hidden="true"
+      {/* Upload Icon with animation */}
+      <div className="mb-6 relative">
+        <div
+          className={`
+          mx-auto w-20 h-20 rounded-2xl flex items-center justify-center
+          transition-all duration-300 group-hover:scale-110
+          ${
+            isDragging ? "bg-amber-500" : "bg-teal-600 group-hover:bg-amber-500"
+          }
+        `}
         >
-          <path
-            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+          <svg
+            className="h-10 w-10 text-white transition-transform group-hover:scale-110"
+            stroke="currentColor"
+            fill="none"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+            />
+          </svg>
+        </div>
+        {/* Ping effect when dragging */}
+        {isDragging && (
+          <div className="absolute inset-0 mx-auto w-20 h-20 rounded-2xl bg-amber-400/50 animate-ping" />
+        )}
       </div>
 
       {/* Instructions */}
       <p
-        className={`text-lg font-medium ${isDragging ? "text-amber-300" : "text-white"}`}
+        className={`text-xl font-bold mb-2 transition-colors ${isDragging ? "text-amber-300" : "text-white"}`}
       >
-        {isDragging ? "Drop your PDF here" : "Drag & drop your PDF here"}
+        {isDragging ? "Drop it like it's hot!" : "Drag & drop your PDF"}
       </p>
-      <p className="mt-1 text-sm text-teal-200">or click to browse</p>
-      <p className="mt-3 text-xs text-teal-300">PDF files only, max 20MB</p>
+      <p className="text-teal-200 mb-4">
+        or{" "}
+        <span className="text-amber-400 font-medium underline underline-offset-2">
+          click to browse
+        </span>
+      </p>
+
+      {/* File type badge */}
+      <div className="inline-flex items-center gap-2 px-4 py-2 bg-teal-900/50 rounded-full">
+        <svg
+          className="w-4 h-4 text-red-400"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 2l5 5h-5V4zM8.5 18a.5.5 0 01-.5-.5v-4a.5.5 0 011 0v4a.5.5 0 01-.5.5zm3 0a.5.5 0 01-.5-.5v-4a.5.5 0 011 0v4a.5.5 0 01-.5.5zm3 0a.5.5 0 01-.5-.5v-4a.5.5 0 011 0v4a.5.5 0 01-.5.5z" />
+        </svg>
+        <span className="text-sm text-teal-300">PDF files only</span>
+        <span className="text-teal-600">•</span>
+        <span className="text-sm text-teal-300">Max 20MB</span>
+      </div>
     </div>
   );
 }

@@ -5,7 +5,7 @@ export default function Header() {
     <header className="w-full border-b border-teal-600 bg-teal-800/80 backdrop-blur-sm">
       <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
         <Link href="/" className="text-xl font-bold text-teal-100">
-          PDF Combiner
+          2up4up
         </Link>
         <nav>
           <Link
