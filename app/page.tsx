@@ -99,15 +99,15 @@ export default function Home() {
             </span>
           </div>
           <p className="text-lg md:text-xl text-teal-100 max-w-lg mx-auto leading-relaxed">
-            Combine multiple PDF pages onto single sheets with
+            The free n-up PDF online tool to combine PDF pages and print
             <span className="text-amber-300 font-semibold">
               {" "}
-              customizable layouts
+              multiple pages per sheet
             </span>{" "}
-            and
+            with
             <span className="text-orange-300 font-semibold">
               {" "}
-              spacing options
+              customizable layouts
             </span>
           </p>
         </div>
@@ -180,12 +180,16 @@ export default function Home() {
         {/* Features section */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl w-full">
           <div className="p-4 bg-teal-800/40 backdrop-blur-sm rounded-xl border border-teal-600/50 text-center group hover:border-amber-400/50 hover:bg-teal-700/40 transition-all duration-300">
-            <div className="w-12 h-12 mx-auto mb-3 bg-amber-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+            <div
+              className="w-12 h-12 mx-auto mb-3 bg-amber-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform"
+              aria-hidden="true"
+            >
               <svg
                 className="w-6 h-6 text-white"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -196,16 +200,20 @@ export default function Home() {
               </svg>
             </div>
             <h3 className="font-bold text-white mb-1">Upload</h3>
-            <p className="text-sm text-teal-300">Drag & drop your PDF</p>
+            <p className="text-sm text-teal-300">Drag & drop your PDF file</p>
           </div>
 
           <div className="p-4 bg-teal-800/40 backdrop-blur-sm rounded-xl border border-teal-600/50 text-center group hover:border-orange-400/50 hover:bg-teal-700/40 transition-all duration-300">
-            <div className="w-12 h-12 mx-auto mb-3 bg-orange-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+            <div
+              className="w-12 h-12 mx-auto mb-3 bg-orange-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform"
+              aria-hidden="true"
+            >
               <svg
                 className="w-6 h-6 text-white"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -216,16 +224,22 @@ export default function Home() {
               </svg>
             </div>
             <h3 className="font-bold text-white mb-1">Customize</h3>
-            <p className="text-sm text-teal-300">Choose layout & spacing</p>
+            <p className="text-sm text-teal-300">
+              Print 2 pages on 1 sheet or 4-up
+            </p>
           </div>
 
           <div className="p-4 bg-teal-800/40 backdrop-blur-sm rounded-xl border border-teal-600/50 text-center group hover:border-teal-400/50 hover:bg-teal-700/40 transition-all duration-300">
-            <div className="w-12 h-12 mx-auto mb-3 bg-teal-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+            <div
+              className="w-12 h-12 mx-auto mb-3 bg-teal-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform"
+              aria-hidden="true"
+            >
               <svg
                 className="w-6 h-6 text-white"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -236,7 +250,9 @@ export default function Home() {
               </svg>
             </div>
             <h3 className="font-bold text-white mb-1">Download</h3>
-            <p className="text-sm text-teal-300">Get your combined PDF</p>
+            <p className="text-sm text-teal-300">
+              Get your PDF page layout instantly
+            </p>
           </div>
         </div>
 
@@ -259,6 +275,65 @@ export default function Home() {
             100% private - runs entirely in your browser
           </span>
         </div>
+
+        {/* FAQ Section */}
+        <section className="mt-16 max-w-3xl w-full">
+          <h2 className="text-2xl font-bold text-white text-center mb-8">
+            Frequently Asked Questions
+          </h2>
+          <div className="space-y-4">
+            <div className="p-5 bg-teal-800/40 backdrop-blur-sm rounded-xl border border-teal-600/50">
+              <h3 className="font-bold text-amber-400 mb-2">
+                What is 2-up and 4-up printing?
+              </h3>
+              <p className="text-teal-200 text-sm leading-relaxed">
+                2-up printing places 2 pages side by side on a single sheet,
+                while 4-up fits 4 pages in a 2x2 grid. Also known as n-up PDF,
+                this PDF page layout tool is perfect for saving paper when
+                printing handouts, lecture notes, or documents. Print multiple
+                pages per sheet easily!
+              </p>
+            </div>
+
+            <div className="p-5 bg-teal-800/40 backdrop-blur-sm rounded-xl border border-teal-600/50">
+              <h3 className="font-bold text-amber-400 mb-2">
+                How do I combine PDF pages?
+              </h3>
+              <p className="text-teal-200 text-sm leading-relaxed">
+                Simply drag and drop your PDF file onto the upload area, choose
+                your preferred layout to print 2 pages on 1 sheet or 4-up,
+                select the orientation and spacing, then click download. Your
+                combined PDF pages are ready in seconds with this free n-up PDF
+                online tool!
+              </p>
+            </div>
+
+            <div className="p-5 bg-teal-800/40 backdrop-blur-sm rounded-xl border border-teal-600/50">
+              <h3 className="font-bold text-amber-400 mb-2">
+                Is my PDF secure and private?
+              </h3>
+              <p className="text-teal-200 text-sm leading-relaxed">
+                Absolutely! Your PDF never leaves your device. All processing
+                happens directly in your browser using JavaScript. We don&apos;t
+                upload, store, or have access to any of your files. It&apos;s
+                100% private.
+              </p>
+            </div>
+
+            <div className="p-5 bg-teal-800/40 backdrop-blur-sm rounded-xl border border-teal-600/50">
+              <h3 className="font-bold text-amber-400 mb-2">
+                Why use 2up4up instead of other PDF page layout tools?
+              </h3>
+              <p className="text-teal-200 text-sm leading-relaxed">
+                Unlike other PDF combiner tools, 2up4up is completely free with
+                no signup required, works offline after loading, processes files
+                instantly in your browser, and never uploads your documents to
+                any server. The best way to combine PDF pages - fast, private,
+                and simple.
+              </p>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );
