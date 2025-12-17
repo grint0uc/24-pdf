@@ -1,0 +1,229 @@
+{
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Initialize Next.js 14 Project",
+      "description": "Set up the base Next.js 14 project with TypeScript, App Router, and Tailwind CSS",
+      "status": "done",
+      "dependencies": [],
+      "priority": "high",
+      "details": "Create a new Next.js 14 project using create-next-app with TypeScript enabled. Configure Tailwind CSS with the project. Set up the basic file structure including app/, components/, lib/, and public/ directories. Configure tsconfig.json and tailwind.config.ts. Create the basic layout.tsx with metadata and globals.css with Tailwind directives.",
+      "testStrategy": "Verify project runs with npm run dev. Confirm TypeScript compilation works. Check Tailwind classes apply correctly on a test element. Ensure App Router structure is in place with app/ directory.",
+      "updatedAt": "2025-12-17T11:54:57.958Z",
+      "subtasks": []
+    },
+    {
+      "id": "2",
+      "title": "Create Basic Routing and Page Stubs",
+      "description": "Set up the routing structure with homepage and editor pages",
+      "status": "done",
+      "dependencies": [
+        "1"
+      ],
+      "priority": "high",
+      "details": "Create app/page.tsx for the homepage with placeholder content. Create app/editor/page.tsx for the editor view. Set up a shared Header component in components/Header.tsx. Implement basic navigation between pages. Add the app layout wrapper with proper HTML structure.",
+      "testStrategy": "Navigate between / and /editor routes. Verify Header appears on both pages. Check that page transitions work correctly. Test that 404 pages render for invalid routes.",
+      "subtasks": [],
+      "updatedAt": "2025-12-17T11:56:32.526Z"
+    },
+    {
+      "id": "3",
+      "title": "Build UploadZone Component",
+      "description": "Create the drag-and-drop file upload component with click-to-browse functionality",
+      "status": "done",
+      "dependencies": [
+        "2"
+      ],
+      "priority": "high",
+      "details": "Build components/UploadZone.tsx with drag-and-drop support using native HTML5 drag events. Implement click-to-browse with hidden file input. Style the drop zone with visual feedback for drag-over state. Add dashed border styling and upload icon. Display instructions text. Accept only PDF files (accept='.pdf,application/pdf').",
+      "testStrategy": "Test drag-and-drop PDF file onto zone. Test clicking to open file browser. Verify drag-over visual state changes. Confirm only PDF files are selectable in browser dialog.",
+      "subtasks": [],
+      "updatedAt": "2025-12-17T11:58:48.853Z"
+    },
+    {
+      "id": "4",
+      "title": "Implement File Validation and PDF Info Extraction",
+      "description": "Add file size validation, format checking, and extract page count from uploaded PDFs",
+      "status": "done",
+      "dependencies": [
+        "3"
+      ],
+      "priority": "high",
+      "details": "Validate uploaded file is PDF format by checking MIME type and file extension. Enforce 20MB maximum file size limit. Install and import pdf-lib library. Use PDFDocument.load() to parse the uploaded PDF. Extract and display page count using getPageCount(). Show file name after successful upload. Display appropriate error messages for invalid files or oversized uploads. Store PDF bytes in React state for later processing.",
+      "testStrategy": "Upload valid PDF and verify page count displays. Try uploading non-PDF file and confirm error message. Upload file over 20MB and verify rejection. Test with various PDF versions and sizes.",
+      "subtasks": [],
+      "updatedAt": "2025-12-17T12:00:48.952Z"
+    },
+    {
+      "id": "5",
+      "title": "Create PDF Processing Core Logic",
+      "description": "Implement the pdf-processor module with 2-up and 4-up layout algorithms",
+      "status": "done",
+      "dependencies": [
+        "4"
+      ],
+      "priority": "high",
+      "details": "Create lib/pdf-processor.ts with the core combination logic. Implement combinePages() function that accepts PDF bytes, layout type, and spacing option. For 2-up: embed 2 pages side by side on landscape Letter/A4. For 4-up: embed 4 pages in 2x2 grid on landscape Letter/A4. Calculate page scaling to fit within allocated space. Implement spacing presets: snug (5% margins), regular (10% margins), spacious (15% margins). Handle source PDFs with varying page sizes. Return new PDF bytes from pdf-lib.",
+      "testStrategy": "Process a 4-page PDF with 2-up and verify 2 output pages. Process 8-page PDF with 4-up and verify 2 output pages. Test each spacing preset and verify visual differences. Test with PDFs of different page sizes (Letter, A4, mixed).",
+      "subtasks": [],
+      "updatedAt": "2025-12-17T12:02:00.313Z"
+    },
+    {
+      "id": "6",
+      "title": "Build LayoutSelector Component",
+      "description": "Create the UI component for selecting 2-up or 4-up page arrangement",
+      "status": "done",
+      "dependencies": [
+        "2"
+      ],
+      "priority": "medium",
+      "details": "Create components/LayoutSelector.tsx with two selectable options. Display visual icons/previews showing 2-up and 4-up arrangements. Implement as radio button group or toggle buttons. Highlight selected option with distinct styling. Call onChange callback when selection changes. Default to 2-up selected. Add accessible labels and keyboard navigation support.",
+      "testStrategy": "Click each option and verify visual selection state. Confirm onChange fires with correct value. Test keyboard navigation between options. Verify screen reader announces options correctly.",
+      "subtasks": [],
+      "updatedAt": "2025-12-17T12:02:57.115Z"
+    },
+    {
+      "id": "7",
+      "title": "Build SpacingSelector Component",
+      "description": "Create the UI component for selecting snug, regular, or spacious spacing",
+      "status": "done",
+      "dependencies": [
+        "2"
+      ],
+      "priority": "medium",
+      "details": "Create components/SpacingSelector.tsx with three spacing options. Use descriptive labels: Snug, Regular, Spacious. Add small helper text explaining each option. Implement as button group or radio buttons. Style selected state distinctly. Default to Regular selected. Support keyboard navigation and accessibility.",
+      "testStrategy": "Select each spacing option and verify visual feedback. Confirm onChange callback receives correct value. Test keyboard accessibility. Verify default selection is Regular.",
+      "subtasks": [],
+      "updatedAt": "2025-12-17T12:03:44.726Z"
+    },
+    {
+      "id": "8",
+      "title": "Build Editor Page Layout",
+      "description": "Create the editor page with sidebar options and main preview area",
+      "status": "done",
+      "dependencies": [
+        "6",
+        "7"
+      ],
+      "priority": "medium",
+      "details": "Build out app/editor/page.tsx with complete layout. Create sidebar containing LayoutSelector, SpacingSelector, and Process button. Create main content area for PDF preview. Add back button/link to return to upload page. Manage state for selected layout and spacing options. Pass uploaded PDF data via URL params, context, or state management. Style with responsive design (sidebar collapses on mobile).",
+      "testStrategy": "Verify sidebar displays all option components. Test layout and spacing selections update state. Confirm back button navigates to homepage. Test responsive layout on mobile viewport.",
+      "subtasks": [],
+      "updatedAt": "2025-12-17T12:04:55.900Z"
+    },
+    {
+      "id": "9",
+      "title": "Implement PDF Preview System",
+      "description": "Render preview thumbnails of the combined PDF output",
+      "status": "done",
+      "dependencies": [
+        "5",
+        "8"
+      ],
+      "priority": "medium",
+      "details": "Create components/PdfPreview.tsx to display output preview. Use pdf-lib to generate preview of combined result. Render pages as images using canvas or convert to data URLs. Show thumbnails of first 2-3 output pages. Display total output page count. Update preview when layout or spacing options change. Add loading state while preview generates. Consider lazy loading pdf-lib for performance.",
+      "testStrategy": "Upload PDF and verify preview displays. Change layout option and confirm preview updates. Change spacing and verify visual difference in preview. Test preview loading state appears during generation.",
+      "subtasks": [],
+      "updatedAt": "2025-12-17T12:06:58.347Z"
+    },
+    {
+      "id": "10",
+      "title": "Implement Download Flow",
+      "description": "Generate final PDF and trigger browser download",
+      "status": "done",
+      "dependencies": [
+        "5",
+        "9"
+      ],
+      "priority": "high",
+      "details": "Create components/ProcessButton.tsx that triggers final PDF generation. Call pdf-processor with current options when clicked. Show processing/spinner indicator during generation. Use Blob and URL.createObjectURL for client-side download. Trigger download with dynamic anchor element. Name output file based on original filename (e.g., 'document-combined.pdf'). Handle and display any processing errors gracefully.",
+      "testStrategy": "Click Process button and verify download starts. Check downloaded PDF has correct combined layout. Test with large PDFs and verify progress indication. Verify error handling when processing fails.",
+      "subtasks": [],
+      "updatedAt": "2025-12-17T12:11:34.164Z"
+    },
+    {
+      "id": "11",
+      "title": "Build Success Screen",
+      "description": "Create the post-download success view with start over option",
+      "status": "done",
+      "dependencies": [
+        "10"
+      ],
+      "priority": "medium",
+      "details": "Create success state/screen after download completes. Display download complete confirmation message. Add 'Start Over' button that resets app state and returns to homepage. Add prompt for optional tip (non-intrusive placement). Style with celebratory but professional design. Ensure smooth transition from editor to success state.",
+      "testStrategy": "Complete download flow and verify success screen appears. Click Start Over and confirm return to clean homepage. Verify all state is reset for new upload. Test tip prompt visibility without being intrusive.",
+      "subtasks": [],
+      "updatedAt": "2025-12-17T12:11:49.428Z"
+    },
+    {
+      "id": "12",
+      "title": "Add Tips Integration",
+      "description": "Implement optional tip button with payment link integration",
+      "status": "done",
+      "dependencies": [
+        "11"
+      ],
+      "priority": "low",
+      "details": "Create components/TipButton.tsx with styled button. Integrate with Ko-fi, Buy Me a Coffee, or similar service. Open payment link in new tab when clicked. Position non-intrusively on success screen. Add optional 'Support this project' text. Style to match app design but not overshadow main actions. Include thank you messaging or animation after clicking.",
+      "testStrategy": "Click tip button and verify payment link opens in new tab. Confirm button styling is subtle and non-intrusive. Test on mobile to ensure accessible tap target.",
+      "subtasks": [],
+      "updatedAt": "2025-12-17T12:13:03.376Z"
+    },
+    {
+      "id": "13",
+      "title": "Implement Mobile Responsiveness",
+      "description": "Ensure all pages and components work well on mobile devices",
+      "status": "done",
+      "dependencies": [
+        "8",
+        "9",
+        "11"
+      ],
+      "priority": "medium",
+      "details": "Audit all components for mobile viewport compatibility. Make editor sidebar collapse or stack on small screens. Ensure upload zone is easily tappable on mobile. Adjust preview sizing for mobile screens. Test touch interactions for drag-and-drop alternative. Ensure buttons have adequate tap targets (44px minimum). Use Tailwind responsive classes (sm:, md:, lg:) throughout.",
+      "testStrategy": "Test all pages on 375px, 768px, and 1024px viewports. Verify touch upload works on mobile. Check editor usability on phone-sized screen. Test landscape and portrait orientations.",
+      "subtasks": [],
+      "updatedAt": "2025-12-17T12:13:06.619Z"
+    },
+    {
+      "id": "14",
+      "title": "Add Error Handling and Loading States",
+      "description": "Implement comprehensive error handling and loading indicators throughout the app",
+      "status": "done",
+      "dependencies": [
+        "4",
+        "9",
+        "10"
+      ],
+      "priority": "medium",
+      "details": "Add loading spinner component for async operations. Show loading state during PDF parsing after upload. Display loading during preview generation. Show processing indicator during final PDF generation. Implement error boundary for React errors. Display user-friendly error messages for all failure cases. Add retry options where appropriate. Handle edge cases: corrupted PDFs, empty PDFs, encrypted PDFs.",
+      "testStrategy": "Upload large PDF and verify loading state shows. Simulate slow processing and check loading indicators. Upload corrupted PDF and verify error message. Test error boundary with simulated React error.",
+      "subtasks": [],
+      "updatedAt": "2025-12-17T12:13:09.759Z"
+    },
+    {
+      "id": "15",
+      "title": "Deploy to Vercel and Final Testing",
+      "description": "Deploy the application to Vercel and perform end-to-end testing",
+      "status": "pending",
+      "dependencies": [
+        "12",
+        "13",
+        "14"
+      ],
+      "priority": "high",
+      "details": "Configure Vercel project settings. Set up vercel.json if needed for any special config. Deploy to Vercel via CLI or Git integration. Test full user flow on production URL. Test on multiple browsers (Chrome, Firefox, Safari, Edge). Verify performance targets: page load < 2s, processing < 10s for 20-page PDF. Check all features work in production environment. Add any needed environment variables. Configure custom domain if available.",
+      "testStrategy": "Run through complete user flow on production URL. Test on Chrome, Firefox, Safari on desktop and mobile. Upload 20-page PDF and measure processing time. Use Lighthouse to verify performance score > 90. Test on slow 3G network simulation.",
+      "subtasks": []
+    }
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "lastModified": "2025-12-17T12:13:09.759Z",
+    "taskCount": 15,
+    "completedCount": 14,
+    "tags": [
+      "master"
+    ]
+  }
+}

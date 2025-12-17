@@ -1,0 +1,199 @@
+# Product Requirements Document: PDF Combiner
+
+## Project Overview
+A web application that allows users to upload a PDF and combine multiple pages onto single sheets (2-up or 4-up layout) with customizable spacing options. The app provides a preview before download and operates on a free + tips model.
+
+## Tech Stack
+- **Framework:** Next.js 14 (App Router)
+- **PDF Library:** pdf-lib
+- **Styling:** Tailwind CSS
+- **Deployment:** Vercel
+- **Language:** TypeScript
+
+## Core Features
+
+### 1. PDF Upload
+- Drag-and-drop upload zone
+- Click to browse file selector
+- Maximum file size: 20MB
+- Accepted format: PDF only
+- Display file name and page count after upload
+- Show error messages for invalid files or size limit exceeded
+
+### 2. Layout Options
+- **Pages per sheet:**
+  - 2-up (2 pages side by side)
+  - 4-up (4 pages in a 2x2 grid)
+- **Spacing presets:**
+  - Snug (minimal margins, maximum page size)
+  - Regular (balanced margins and page size)
+  - Spacious (generous margins, smaller pages)
+- Visual preview of layout selection
+
+### 3. Preview
+- Display preview of the combined PDF result
+- Show thumbnail of first few output pages
+- Display output page count
+- Allow user to go back and change settings
+
+### 4. Download
+- Generate combined PDF on user confirmation
+- Automatic download trigger
+- Show processing indicator during generation
+- Option to start over with new file
+
+### 5. Tips / Support
+- Optional tip button (non-intrusive)
+- Integration with Ko-fi, Buy Me a Coffee, or Stripe
+- Thank you message after tip
+
+## User Flow
+1. User lands on homepage
+2. User uploads PDF file
+3. User selects layout (2-up or 4-up)
+4. User selects spacing (snug/regular/spacious)
+5. User sees preview of result
+6. User clicks download
+7. PDF is generated and downloaded
+8. User sees success screen with option to tip or start over
+
+## Page Structure
+
+### Homepage (/)
+- Hero section with app title and description
+- Upload zone (prominent, center of page)
+- Brief instructions / how it works
+
+### Editor (/editor)
+- Sidebar with options:
+  - Layout selector (2-up / 4-up)
+  - Spacing selector (snug / regular / spacious)
+  - Process button
+- Main area with preview
+- Back button to upload new file
+
+### Success Screen
+- Download complete confirmation
+- Start over button
+- Optional tip prompt
+
+## UI/UX Requirements
+- Clean, minimal design
+- Mobile responsive
+- Instant feedback on all interactions
+- Progress indicators for processing
+- Accessible (keyboard navigation, screen reader support)
+- Dark mode support (optional, nice-to-have)
+
+## Technical Requirements
+
+### PDF Processing
+- All processing happens client-side (no server storage of files)
+- Use pdf-lib for reading and creating PDFs
+- Maintain original page quality
+- Handle various PDF page sizes gracefully
+
+### Performance
+- Lazy load pdf-lib library
+- Show progress for large files
+- Target processing time < 10 seconds for typical documents
+
+### Security
+- No file uploads to server (client-side only)
+- No user data collection
+- Privacy-focused messaging
+
+## File Structure
+```
+pdfcombiner/
+├── app/
+│   ├── layout.tsx
+│   ├── page.tsx              # Homepage with upload
+│   ├── editor/
+│   │   └── page.tsx          # Editor with options and preview
+│   └── globals.css
+├── components/
+│   ├── UploadZone.tsx
+│   ├── LayoutSelector.tsx
+│   ├── SpacingSelector.tsx
+│   ├── PdfPreview.tsx
+│   ├── ProcessButton.tsx
+│   ├── TipButton.tsx
+│   └── Header.tsx
+├── lib/
+│   ├── pdf-processor.ts      # Core PDF combination logic
+│   └── utils.ts
+├── public/
+│   └── icons/
+├── .taskmaster/
+├── tailwind.config.ts
+├── next.config.js
+├── package.json
+└── tsconfig.json
+```
+
+## Milestones
+
+### Milestone 1: Project Setup
+- Initialize Next.js project
+- Configure Tailwind CSS
+- Setup basic routing
+- Create component stubs
+
+### Milestone 2: Upload Functionality
+- Build UploadZone component
+- Implement file validation
+- Extract PDF page count
+- Store PDF in memory/state
+
+### Milestone 3: Layout Engine
+- Implement 2-up layout logic
+- Implement 4-up layout logic
+- Implement spacing calculations
+- Create pdf-processor module
+
+### Milestone 4: UI Components
+- Build LayoutSelector
+- Build SpacingSelector
+- Build editor page layout
+- Style all components
+
+### Milestone 5: Preview System
+- Render PDF preview thumbnails
+- Show output page count
+- Connect options to live preview
+
+### Milestone 6: Download Flow
+- Generate final PDF
+- Trigger download
+- Build success screen
+- Add start over functionality
+
+### Milestone 7: Tips Integration
+- Add tip button component
+- Integrate payment link
+- Style non-intrusively
+
+### Milestone 8: Polish & Deploy
+- Mobile responsiveness
+- Error handling
+- Loading states
+- Deploy to Vercel
+- Test full flow
+
+## Success Metrics
+- PDF uploads successfully
+- Correct page arrangement for 2-up and 4-up
+- Spacing options visibly different
+- Download works on all major browsers
+- Page loads in < 2 seconds
+- Processing completes in < 10 seconds for 20-page PDF
+
+## Out of Scope (v1)
+- User accounts
+- Cloud storage
+- Batch processing multiple PDFs
+- Custom spacing values
+- Page reordering
+- Other output formats
+- API access
