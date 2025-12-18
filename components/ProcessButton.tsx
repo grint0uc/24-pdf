@@ -41,7 +41,7 @@ export default function ProcessButton({
       });
 
       // Create download
-      const blob = new Blob([processedBytes], {
+      const blob = new Blob([new Uint8Array(processedBytes)], {
         type: "application/pdf",
       });
       const url = URL.createObjectURL(blob);
