@@ -30,7 +30,7 @@ export default function OrientationSelector({
 
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-teal-200">
+      <label className="block text-sm font-medium text-white">
         Orientation
       </label>
       <div
@@ -47,11 +47,11 @@ export default function OrientationSelector({
             onClick={() => onChange(option.value)}
             className={`
               relative p-3 rounded-lg border-2 transition-all
-              focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-teal-800
+              focus:outline-none focus:ring-2 focus:ring-[#c41e3a] focus:ring-offset-2 focus:ring-offset-brown-800
               ${
                 value === option.value
-                  ? "border-amber-400 bg-teal-700/80"
-                  : "border-teal-600 bg-teal-700/40 hover:border-teal-400 hover:bg-teal-700/60"
+                  ? "border-[#c41e3a] bg-brown-700"
+                  : "border-brown-500 bg-brown-700/50 hover:border-brown-300 hover:bg-brown-700"
               }
             `}
           >
@@ -66,12 +66,12 @@ export default function OrientationSelector({
             <div className="text-center">
               <p
                 className={`font-medium text-sm ${
-                  value === option.value ? "text-amber-300" : "text-teal-100"
+                  value === option.value ? "text-[#c41e3a]" : "text-white"
                 }`}
               >
                 {option.label}
               </p>
-              <p className="text-xs text-teal-300 mt-0.5">
+              <p className="text-xs text-brown-300 mt-0.5">
                 {option.description}
               </p>
             </div>
@@ -83,7 +83,7 @@ export default function OrientationSelector({
 }
 
 function LandscapeIcon({ selected }: { selected: boolean }) {
-  const color = selected ? "#FF9F00" : "#75cfdb";
+  const color = selected ? "#c41e3a" : "#ffffff";
   return (
     <svg width="48" height="36" viewBox="0 0 48 36" fill="none">
       <rect
@@ -129,7 +129,7 @@ function LandscapeIcon({ selected }: { selected: boolean }) {
 }
 
 function PortraitIcon({ selected }: { selected: boolean }) {
-  const color = selected ? "#FF9F00" : "#75cfdb";
+  const color = selected ? "#c41e3a" : "#ffffff";
   return (
     <svg width="48" height="36" viewBox="0 0 48 36" fill="none">
       <rect

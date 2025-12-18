@@ -10,6 +10,7 @@ import OrientationSelector from "@/components/OrientationSelector";
 import PdfPreview from "@/components/PdfPreview";
 import ProcessButton from "@/components/ProcessButton";
 import TipButton from "@/components/TipButton";
+import { getPDF, clearPDF } from "@/lib/pdf-storage";
 import {
   LayoutType,
   SpacingType,
@@ -20,7 +21,7 @@ import {
 interface PdfInfo {
   fileName: string;
   pageCount: number;
-  data: string;
+  data: Uint8Array;
 }
 
 export default function EditorPage() {
@@ -33,33 +34,36 @@ export default function EditorPage() {
   const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
-    // Load PDF info from sessionStorage
-    const fileName = sessionStorage.getItem("pdfFileName");
-    const pageCount = sessionStorage.getItem("pdfPageCount");
-    const pdfData = sessionStorage.getItem("pdfData");
+    // Load PDF from IndexedDB
+    const loadPDF = async () => {
+      try {
+        const stored = await getPDF();
+        if (!stored) {
+          router.push("/");
+          return;
+        }
 
-    if (!fileName || !pageCount || !pdfData) {
-      // No PDF loaded, redirect to home
-      router.push("/");
-      return;
-    }
+        setPdfInfo({
+          fileName: stored.fileName,
+          pageCount: stored.pageCount,
+          data: stored.data,
+        });
+        setLoading(false);
+      } catch (err) {
+        console.error("Failed to load PDF from storage:", err);
+        router.push("/");
+      }
+    };
 
-    setPdfInfo({
-      fileName,
-      pageCount: parseInt(pageCount, 10),
-      data: pdfData,
-    });
-    setLoading(false);
+    loadPDF();
   }, [router]);
 
   const handleSuccess = () => {
     setShowSuccess(true);
   };
 
-  const handleStartOver = () => {
-    sessionStorage.removeItem("pdfData");
-    sessionStorage.removeItem("pdfFileName");
-    sessionStorage.removeItem("pdfPageCount");
+  const handleStartOver = async () => {
+    await clearPDF();
     router.push("/");
   };
 
@@ -72,7 +76,7 @@ export default function EditorPage() {
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 flex items-center justify-center">
-          <div className="animate-spin h-8 w-8 border-4 border-amber-400 border-t-transparent rounded-full"></div>
+          <div className="animate-spin h-8 w-8 border-4 border-[#c41e3a] border-t-transparent rounded-full"></div>
         </main>
       </div>
     );
@@ -84,10 +88,10 @@ export default function EditorPage() {
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 flex items-center justify-center p-8">
-          <div className="text-center max-w-md bg-teal-800/60 backdrop-blur-sm p-8 rounded-xl border border-teal-600">
+          <div className="text-center max-w-md bg-brown-700 p-8 rounded-xl border border-brown-500 shadow-lg">
             <div className="mb-6">
               <svg
-                className="mx-auto h-16 w-16 text-teal-300"
+                className="mx-auto h-16 w-16 text-[#c41e3a]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -103,25 +107,25 @@ export default function EditorPage() {
             <h2 className="text-2xl font-bold text-white mb-2">
               Download Complete!
             </h2>
-            <p className="text-teal-200 mb-8">
+            <p className="text-brown-200 mb-8">
               Your combined PDF has been downloaded successfully.
             </p>
             <div className="space-y-3">
               <button
                 onClick={handleStartOver}
-                className="w-full py-3 px-4 bg-orange-400 text-white rounded-lg hover:bg-orange-500 transition-colors font-medium"
+                className="w-full py-3 px-4 bg-[#c41e3a] text-white rounded-lg hover:bg-[#a31830] transition-colors font-medium"
               >
                 Start Over
               </button>
               <button
                 onClick={() => setShowSuccess(false)}
-                className="w-full py-3 px-4 bg-teal-600 text-teal-100 rounded-lg hover:bg-teal-500 transition-colors font-medium"
+                className="w-full py-3 px-4 bg-brown-600 text-white rounded-lg hover:bg-brown-500 transition-colors font-medium"
               >
                 Back to Editor
               </button>
             </div>
-            <div className="mt-8 pt-6 border-t border-teal-600">
-              <p className="text-sm text-teal-300 mb-3">Enjoying 2up4up?</p>
+            <div className="mt-8 pt-6 border-t border-brown-500">
+              <p className="text-sm text-brown-300 mb-3">Enjoying 2up4up?</p>
               <TipButton />
             </div>
           </div>
@@ -135,14 +139,14 @@ export default function EditorPage() {
       <Header />
       <main className="flex-1 flex flex-col md:flex-row">
         {/* Sidebar */}
-        <aside className="w-full md:w-72 border-b md:border-b-0 md:border-r border-teal-600 bg-teal-800/80 backdrop-blur-sm p-4 flex flex-col">
+        <aside className="w-full md:w-72 border-b md:border-b-0 md:border-r border-brown-600 bg-brown-800 p-4 flex flex-col">
           {/* File info */}
           {pdfInfo && (
-            <div className="mb-4 p-3 bg-teal-700/50 rounded-lg border border-teal-600">
+            <div className="mb-4 p-3 bg-brown-700/50 rounded-lg border border-brown-600">
               <p className="text-sm font-medium text-white truncate">
                 {pdfInfo.fileName}
               </p>
-              <p className="text-xs text-teal-300 mt-1">
+              <p className="text-xs text-brown-300 mt-1">
                 {pdfInfo.pageCount} page{pdfInfo.pageCount !== 1 ? "s" : ""} →{" "}
                 {outputPageCount} output page{outputPageCount !== 1 ? "s" : ""}
               </p>
@@ -174,7 +178,7 @@ export default function EditorPage() {
           <div className="mt-auto pt-6">
             <Link
               href="/"
-              className="inline-flex items-center text-sm text-teal-300 hover:text-white transition-colors"
+              className="inline-flex items-center text-sm text-brown-300 hover:text-white transition-colors"
             >
               <svg
                 className="w-4 h-4 mr-1"
@@ -195,7 +199,7 @@ export default function EditorPage() {
         </aside>
 
         {/* Preview area */}
-        <div className="flex-1 overflow-auto bg-teal-900/50 min-h-[400px]">
+        <div className="flex-1 overflow-auto bg-brown-900 min-h-[400px]">
           {pdfInfo && (
             <PdfPreview
               pdfData={pdfInfo.data}

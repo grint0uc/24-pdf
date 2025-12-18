@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="6" fill="#14474f"/>
-  <text x="16" y="12" text-anchor="middle" font-family="system-ui, sans-serif" font-size="7" font-weight="bold" fill="#FF9F00">2up</text>
-  <text x="16" y="24" text-anchor="middle" font-family="system-ui, sans-serif" font-size="7" font-weight="bold" fill="#F4631E">4up</text>
+  <rect width="32" height="32" rx="6" fill="#4a3728"/>
+  <text x="16" y="12" text-anchor="middle" font-family="system-ui, sans-serif" font-size="7" font-weight="bold" fill="#ffffff">2up</text>
+  <text x="16" y="24" text-anchor="middle" font-family="system-ui, sans-serif" font-size="7" font-weight="bold" fill="#c41e3a">4up</text>
 </svg>

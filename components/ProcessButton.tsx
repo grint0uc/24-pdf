@@ -9,7 +9,7 @@ import {
 } from "@/lib/pdf-processor";
 
 interface ProcessButtonProps {
-  pdfData: string; // base64 encoded PDF
+  pdfData: Uint8Array;
   fileName: string;
   layout: LayoutType;
   spacing: SpacingType;
@@ -33,22 +33,15 @@ export default function ProcessButton({
     setError(null);
 
     try {
-      // Decode base64 PDF data
-      const binaryString = atob(pdfData);
-      const bytes = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
-
-      // Process the PDF
-      const processedBytes = await combinePages(bytes, {
+      // Process the PDF directly from Uint8Array
+      const processedBytes = await combinePages(pdfData, {
         layout,
         spacing,
         orientation,
       });
 
       // Create download
-      const blob = new Blob([processedBytes as unknown as BlobPart], {
+      const blob = new Blob([processedBytes], {
         type: "application/pdf",
       });
       const url = URL.createObjectURL(blob);
@@ -86,8 +79,8 @@ export default function ProcessButton({
           w-full py-3 px-4 rounded-lg font-medium transition-all
           ${
             processing
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-orange-400 hover:bg-orange-500 text-white"
+              ? "bg-brown-500 cursor-not-allowed text-white"
+              : "bg-[#c41e3a] hover:bg-[#a31830] text-white"
           }
         `}
       >
@@ -135,7 +128,7 @@ export default function ProcessButton({
         )}
       </button>
 
-      {error && <p className="text-sm text-red-600 text-center">{error}</p>}
+      {error && <p className="text-sm text-[#c41e3a] text-center">{error}</p>}
     </div>
   );
 }

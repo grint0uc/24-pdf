@@ -2,7 +2,7 @@
 
 import { useState, useRef, DragEvent, ChangeEvent } from "react";
 
-const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+const MAX_FILE_SIZE = 40 * 1024 * 1024; // 40MB
 
 interface UploadZoneProps {
   onFileSelect: (file: File) => void;
@@ -80,27 +80,27 @@ export default function UploadZone({ onFileSelect, onError }: UploadZoneProps) {
       onDrop={handleDrop}
       className={`
         relative w-full max-w-lg p-10 rounded-2xl text-center
-        cursor-pointer transition-all duration-300 backdrop-blur-sm
+        cursor-pointer transition-all duration-300
         group overflow-hidden
         ${
           isDragging
-            ? "bg-amber-400/20 border-2 border-amber-400 scale-105"
-            : "bg-teal-800/40 border-2 border-dashed border-teal-400/50 hover:border-amber-400 hover:bg-teal-700/50"
+            ? "bg-[#c41e3a]/20 border-2 border-[#c41e3a] scale-105"
+            : "bg-brown-700/50 border-2 border-dashed border-brown-400 hover:border-[#c41e3a] hover:bg-brown-700"
         }
       `}
     >
       {/* Animated corner accents */}
       <div
-        className={`absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 rounded-tl-xl transition-colors ${isDragging ? "border-amber-400" : "border-teal-400/50 group-hover:border-amber-400"}`}
+        className={`absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 rounded-tl-xl transition-colors ${isDragging ? "border-[#c41e3a]" : "border-brown-400 group-hover:border-[#c41e3a]"}`}
       />
       <div
-        className={`absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 rounded-tr-xl transition-colors ${isDragging ? "border-amber-400" : "border-teal-400/50 group-hover:border-amber-400"}`}
+        className={`absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 rounded-tr-xl transition-colors ${isDragging ? "border-[#c41e3a]" : "border-brown-400 group-hover:border-[#c41e3a]"}`}
       />
       <div
-        className={`absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 rounded-bl-xl transition-colors ${isDragging ? "border-amber-400" : "border-teal-400/50 group-hover:border-amber-400"}`}
+        className={`absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 rounded-bl-xl transition-colors ${isDragging ? "border-[#c41e3a]" : "border-brown-400 group-hover:border-[#c41e3a]"}`}
       />
       <div
-        className={`absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 rounded-br-xl transition-colors ${isDragging ? "border-amber-400" : "border-teal-400/50 group-hover:border-amber-400"}`}
+        className={`absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 rounded-br-xl transition-colors ${isDragging ? "border-[#c41e3a]" : "border-brown-400 group-hover:border-[#c41e3a]"}`}
       />
 
       <input
@@ -118,7 +118,9 @@ export default function UploadZone({ onFileSelect, onError }: UploadZoneProps) {
           mx-auto w-20 h-20 rounded-2xl flex items-center justify-center
           transition-all duration-300 group-hover:scale-110
           ${
-            isDragging ? "bg-amber-500" : "bg-teal-600 group-hover:bg-amber-500"
+            isDragging
+              ? "bg-[#c41e3a]"
+              : "bg-brown-600 group-hover:bg-[#c41e3a]"
           }
         `}
         >
@@ -139,35 +141,35 @@ export default function UploadZone({ onFileSelect, onError }: UploadZoneProps) {
         </div>
         {/* Ping effect when dragging */}
         {isDragging && (
-          <div className="absolute inset-0 mx-auto w-20 h-20 rounded-2xl bg-amber-400/50 animate-ping" />
+          <div className="absolute inset-0 mx-auto w-20 h-20 rounded-2xl bg-[#c41e3a]/50 animate-ping" />
         )}
       </div>
 
       {/* Instructions */}
       <p
-        className={`text-xl font-bold mb-2 transition-colors ${isDragging ? "text-amber-300" : "text-white"}`}
+        className={`text-xl font-bold mb-2 transition-colors ${isDragging ? "text-[#c41e3a]" : "text-white"}`}
       >
         {isDragging ? "Drop it like it's hot!" : "Drag & drop your PDF"}
       </p>
-      <p className="text-teal-200 mb-4">
+      <p className="text-brown-200 mb-4">
         or{" "}
-        <span className="text-amber-400 font-medium underline underline-offset-2">
+        <span className="text-[#c41e3a] font-medium underline underline-offset-2">
           click to browse
         </span>
       </p>
 
       {/* File type badge */}
-      <div className="inline-flex items-center gap-2 px-4 py-2 bg-teal-900/50 rounded-full">
+      <div className="inline-flex items-center gap-2 px-4 py-2 bg-brown-800/50 rounded-full">
         <svg
-          className="w-4 h-4 text-red-400"
+          className="w-4 h-4 text-[#c41e3a]"
           fill="currentColor"
           viewBox="0 0 24 24"
         >
           <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 2l5 5h-5V4zM8.5 18a.5.5 0 01-.5-.5v-4a.5.5 0 011 0v4a.5.5 0 01-.5.5zm3 0a.5.5 0 01-.5-.5v-4a.5.5 0 011 0v4a.5.5 0 01-.5.5zm3 0a.5.5 0 01-.5-.5v-4a.5.5 0 011 0v4a.5.5 0 01-.5.5z" />
         </svg>
-        <span className="text-sm text-teal-300">PDF files only</span>
-        <span className="text-teal-600">•</span>
-        <span className="text-sm text-teal-300">Max 20MB</span>
+        <span className="text-sm text-brown-200">PDF files only</span>
+        <span className="text-brown-500">•</span>
+        <span className="text-sm text-brown-200">Max 40MB</span>
       </div>
     </div>
   );

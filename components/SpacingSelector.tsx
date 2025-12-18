@@ -32,7 +32,7 @@ export default function SpacingSelector({
 
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-teal-200">Spacing</label>
+      <label className="block text-sm font-medium text-white">Spacing</label>
       <div className="space-y-2" role="radiogroup" aria-label="Page spacing">
         {options.map((option) => (
           <button
@@ -43,11 +43,11 @@ export default function SpacingSelector({
             onClick={() => onChange(option.value)}
             className={`
               w-full p-3 rounded-lg border-2 transition-all text-left
-              focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-teal-800
+              focus:outline-none focus:ring-2 focus:ring-[#c41e3a] focus:ring-offset-2 focus:ring-offset-brown-800
               ${
                 value === option.value
-                  ? "border-amber-400 bg-teal-700/80"
-                  : "border-teal-600 bg-teal-700/40 hover:border-teal-400 hover:bg-teal-700/60"
+                  ? "border-[#c41e3a] bg-brown-700"
+                  : "border-brown-500 bg-brown-700/50 hover:border-brown-300 hover:bg-brown-700"
               }
             `}
           >
@@ -55,12 +55,12 @@ export default function SpacingSelector({
               <div>
                 <p
                   className={`font-medium text-sm ${
-                    value === option.value ? "text-amber-300" : "text-teal-100"
+                    value === option.value ? "text-[#c41e3a]" : "text-white"
                   }`}
                 >
                   {option.label}
                 </p>
-                <p className="text-xs text-teal-300">{option.description}</p>
+                <p className="text-xs text-brown-300">{option.description}</p>
               </div>
               <SpacingIcon
                 type={option.value}
@@ -81,7 +81,7 @@ function SpacingIcon({
   type: SpacingType;
   selected: boolean;
 }) {
-  const color = selected ? "#FF9F00" : "#75cfdb";
+  const color = selected ? "#c41e3a" : "#ffffff";
 
   // Different margin sizes based on spacing type
   const margins: Record<SpacingType, number> = {

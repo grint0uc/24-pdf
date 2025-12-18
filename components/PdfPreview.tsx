@@ -13,7 +13,7 @@ import {
 pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
 interface PdfPreviewProps {
-  pdfData: string; // base64 encoded PDF
+  pdfData: Uint8Array;
   layout: LayoutType;
   spacing: SpacingType;
   orientation: OrientationType;
@@ -45,15 +45,8 @@ export default function PdfPreview({
     setError(null);
 
     try {
-      // Decode base64 PDF data
-      const binaryString = atob(pdfData);
-      const bytes = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
-
-      // Process the PDF with current options
-      const processedBytes = await combinePages(bytes, {
+      // Process the PDF with current options directly from Uint8Array
+      const processedBytes = await combinePages(pdfData, {
         layout,
         spacing,
         orientation,
@@ -129,9 +122,9 @@ export default function PdfPreview({
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center p-8">
-        <div className="animate-spin h-10 w-10 border-4 border-amber-400 border-t-transparent rounded-full mb-4"></div>
-        <p className="text-teal-100">Generating preview...</p>
-        <p className="text-xs text-teal-300 mt-1">
+        <div className="animate-spin h-10 w-10 border-4 border-[#c41e3a] border-t-transparent rounded-full mb-4"></div>
+        <p className="text-white">Generating preview...</p>
+        <p className="text-xs text-brown-300 mt-1">
           {layout} • {orientation} • {spacing}
         </p>
       </div>
@@ -140,7 +133,7 @@ export default function PdfPreview({
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center p-8 text-red-300">
+      <div className="flex flex-col items-center justify-center p-8 text-brown-200">
         <svg
           className="h-12 w-12 mb-2"
           fill="none"
@@ -157,7 +150,7 @@ export default function PdfPreview({
         <p>{error}</p>
         <button
           onClick={() => generatePreview()}
-          className="mt-4 px-4 py-2 bg-orange-400 text-white rounded hover:bg-orange-500 transition-colors"
+          className="mt-4 px-4 py-2 bg-[#c41e3a] text-white rounded hover:bg-[#a31830] transition-colors"
         >
           Retry
         </button>
@@ -167,7 +160,7 @@ export default function PdfPreview({
 
   return (
     <div className="flex flex-col items-center p-4">
-      <div className="mb-4 text-sm text-teal-200">
+      <div className="mb-4 text-sm text-brown-200">
         {totalPages} output page{totalPages !== 1 ? "s" : ""} • {layout} •{" "}
         {orientation} • {spacing}
       </div>
@@ -176,9 +169,9 @@ export default function PdfPreview({
         {previews.map((src, index) => (
           <div
             key={index}
-            className="bg-teal-800/60 shadow-lg rounded-lg overflow-hidden border border-teal-600"
+            className="bg-brown-100 shadow-lg rounded-lg overflow-hidden border border-brown-400"
           >
-            <div className="p-2 bg-teal-700/50 text-xs text-teal-200 text-center border-b border-teal-600">
+            <div className="p-2 bg-brown-700 text-xs text-white text-center border-b border-brown-600">
               Page {index + 1}
             </div>
             <img
@@ -191,7 +184,7 @@ export default function PdfPreview({
       </div>
 
       {totalPages > 3 && (
-        <p className="mt-4 text-sm text-teal-300">
+        <p className="mt-4 text-sm text-brown-300">
           +{totalPages - 3} more page{totalPages - 3 !== 1 ? "s" : ""}
         </p>
       )}

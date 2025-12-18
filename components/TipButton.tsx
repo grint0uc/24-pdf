@@ -14,8 +14,8 @@ export default function TipButton({ className = "" }: TipButtonProps) {
       onClick={handleClick}
       className={`
         inline-flex items-center px-4 py-2
-        bg-amber-400 text-teal-900 rounded-lg
-        hover:bg-amber-300 transition-colors
+        bg-[#c41e3a] text-white rounded-lg
+        hover:bg-[#a31830] transition-colors
         text-sm font-medium
         ${className}
       `}

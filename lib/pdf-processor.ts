@@ -156,10 +156,22 @@ export async function combinePages(
   const { layout, spacing, orientation } = options;
   const pagesPerSheet = layout === "2-up" ? 2 : 4;
 
-  // Load the source PDF
-  const sourcePdf = await PDFDocument.load(pdfBytes, {
-    ignoreEncryption: true,
-  });
+  // Load the source PDF with lenient parsing options
+  let sourcePdf;
+  try {
+    sourcePdf = await PDFDocument.load(pdfBytes, {
+      ignoreEncryption: true,
+      updateMetadata: false,
+    });
+  } catch {
+    // Try with more lenient parsing if first attempt fails
+    sourcePdf = await PDFDocument.load(pdfBytes, {
+      ignoreEncryption: true,
+      updateMetadata: false,
+      throwOnInvalidObject: false,
+      capNumbers: true,
+    });
+  }
   const sourcePages = sourcePdf.getPages();
   const totalPages = sourcePages.length;
 
